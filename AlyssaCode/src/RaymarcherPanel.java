@@ -5,6 +5,7 @@ import java.util.Random;
 import javax.swing.JPanel;
 public class RaymarcherPanel extends JPanel {
 
+    private final Camera camera;
     ArrayList<CollisionObject> listCollisionObjects = new ArrayList<>();
 
     //ListCollisionObjects setter + getter
@@ -27,7 +28,6 @@ public class RaymarcherPanel extends JPanel {
         return listCollisionObjects;
     }
 
-    //Todo: Implement each one of these methods
     //Randomizers for ListCollisionObjects setter
     public boolean randomizeIsCircle() {
         boolean result = false;
@@ -77,7 +77,7 @@ public class RaymarcherPanel extends JPanel {
     }
     public int randomizeAmountOfShapes() {
         Random random = new Random();
-        return random.nextInt(15) + 5;
+        return random.nextInt(12) + 8;
     }
     public int randomizeDiameter() {
         Random random = new Random();
@@ -98,6 +98,8 @@ public class RaymarcherPanel extends JPanel {
         this.setPreferredSize(new Dimension(raymarcherRunner.getFrame().getWidth(),
                 raymarcherRunner.getFrame().getHeight()));
         setListCollisionObjects();
+        camera = new Camera(500,320);
+        addMouseMotionListener(camera);
     }
     
     @Override
@@ -106,5 +108,6 @@ public class RaymarcherPanel extends JPanel {
         for (int i = 0; i < getListCollisionObjects().size(); i++) {
             getListCollisionObjects().get(i).drawObject(g2d);
         }
+        camera.drawObject((Graphics2D) g);
     }
 }
