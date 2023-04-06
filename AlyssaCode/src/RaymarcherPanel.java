@@ -39,12 +39,12 @@ public class RaymarcherPanel extends JPanel {
     }
     public Color randomizeColor() {
         Color result;
-        Color color0 = new Color(173, 167, 184);
-        Color color1 = new Color(178, 196, 204);
-        Color color2 = new Color(210, 219, 185);
-        Color color3 = new Color(242, 236, 199);
-        Color color4 = new Color(230, 209, 200);
-        Color color5 = new Color(142, 168, 149);
+        Color color0 = new Color(92, 150, 100);
+        Color color1 = new Color(59, 125, 95);
+        Color color2 = new Color(53, 94, 92);
+        Color color3 = new Color(39, 70, 94);
+        Color color4 = new Color(35, 108, 130);
+        Color color5 = new Color(62, 168, 163);
         Random random = new Random();
         int n = random.nextInt(5);
         if (n == 0) {
