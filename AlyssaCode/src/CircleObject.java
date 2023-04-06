@@ -2,26 +2,37 @@ import java.awt.*;
 
 public class CircleObject extends CollisionObject{
 
-    int radius;
+    int diameter;
 
-    CircleObject(float x, float y, int radius){
+    Color color;
+
+    CircleObject(float x, float y, int radius, Color color){
         super(x, y);
-        setRadius(radius);
+        setDiameter(radius);
+        setColor(color);
     }
 
-    public int getRadius() {
-        return radius;
+    public Color getColor() {
+        return color;
     }
 
-    public void setRadius(int radius) {
-        this.radius = radius;
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public int getDiameter() {
+        return diameter;
+    }
+
+    public void setDiameter(int diameter) {
+        this.diameter = diameter;
     }
 
     @Override
     public void paintShape(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.GREEN);
-        g2d.fillOval((int) getX(), (int) getY(), getRadius(), getRadius());
+        g2d.setColor(getColor());
+        g2d.fillOval((int) getX() - getDiameter(), (int) getY() - getDiameter(), getDiameter(), getDiameter());
     }
 
 }
