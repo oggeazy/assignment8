@@ -32,7 +32,7 @@ public class CircleObject extends CollisionObject{
     public void paintShape(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(getColor());
-        g2d.fillOval((int) getX() - getDiameter(), (int) getY() - getDiameter(), getDiameter(), getDiameter());
+        g2d.fillOval((int) getX() - (getDiameter()/ 2), (int) getY() - (getDiameter()/ 2), getDiameter(), getDiameter());
     }
 
 }

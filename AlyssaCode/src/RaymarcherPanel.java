@@ -5,8 +5,10 @@ import java.util.Random;
 import javax.swing.JPanel;
 public class RaymarcherPanel extends JPanel {
 
+    //Instance variables
     private final Camera camera;
     ArrayList<CollisionObject> listCollisionObjects = new ArrayList<>();
+    ArrayList<March> march = new ArrayList<>();
 
     //ListCollisionObjects setter + getter
     public void setListCollisionObjects() {
@@ -81,15 +83,46 @@ public class RaymarcherPanel extends JPanel {
     }
     public int randomizeDiameter() {
         Random random = new Random();
-        return random.nextInt(100) + 25;
+        return random.nextInt(150) + 25;
     }
     public int randomizeWidth() {
         Random random = new Random();
-        return random.nextInt(150) + 25;
+        return random.nextInt(175) + 25;
     }
     public int randomizeHeight() {
         Random random = new Random();
-        return random.nextInt(150) + 25;
+        return random.nextInt(175) + 25;
+    }
+
+//Getter + setter march
+    /*Use a loop to keep track of the minimum distance between the current iteration
+point, i.e., the camera coordinates, and any object in the world. Once this goes
+below that threshold mentioned in step 11, break out, and return the list.
+ii. After one march, update the current iteration point to be the end-point of the
+march (with no alterations to the y coordinate - see step 16 for more on this!).
+*/
+    public void setMarch(){
+        int i = 0;
+        float inputX = camera.getX();
+        float inputY = camera.getY();
+
+       do {
+           if (listCollisionObjects.get(i).getX() < 0.01 || listCollisionObjects.get(i).getY() < 0.01 ){
+               break;
+           }
+           else {
+               March march1 = new March(inputX, inputY,
+                       listCollisionObjects.get(i).getX(),listCollisionObjects.get(i).getY());
+               march.add(march1);
+               if (march1.getEndingX() > this.getPreferredSize().getWidth() ||
+                       march1.getEndingY() > this.getPreferredSize().getHeight()){
+                   break;
+               }
+           }
+           inputX =  listCollisionObjects.get(i).getX();
+           i++;
+       }
+       while (i < listCollisionObjects.size());
     }
 
 
@@ -98,8 +131,10 @@ public class RaymarcherPanel extends JPanel {
         this.setPreferredSize(new Dimension(raymarcherRunner.getFrame().getWidth(),
                 raymarcherRunner.getFrame().getHeight()));
         setListCollisionObjects();
-        camera = new Camera(500,320);
+        camera = new Camera(500,320, 0);
+        setMarch();
         addMouseMotionListener(camera);
+        addMouseListener(camera);
     }
     
     @Override
