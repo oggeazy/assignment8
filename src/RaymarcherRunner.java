@@ -34,7 +34,6 @@ public class RaymarcherRunner extends SwingApplication {
         this.addComponent(raymarcherPanel);
         this.packComponents();
         this.setVisible(true);
-
     }
     
     @Override
