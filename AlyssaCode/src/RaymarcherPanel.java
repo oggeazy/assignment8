@@ -1,6 +1,7 @@
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Random;
 import javax.swing.JPanel;
 public class RaymarcherPanel extends JPanel {
@@ -9,6 +10,7 @@ public class RaymarcherPanel extends JPanel {
     private final Camera camera;
     ArrayList<CollisionObject> listCollisionObjects = new ArrayList<>();
     ArrayList<March> march = new ArrayList<>();
+    ArrayList<Double> distancesFromCamera = new ArrayList<>();
 
     //ListCollisionObjects setter + getter
     public void setListCollisionObjects() {
@@ -48,7 +50,7 @@ public class RaymarcherPanel extends JPanel {
         Color color4 = new Color(35, 108, 130);
         Color color5 = new Color(62, 168, 163);
         Random random = new Random();
-        int n = random.nextInt(5);
+        int n = random.nextInt(6);
         if (n == 0) {
             result = color0;
         }
@@ -79,7 +81,7 @@ public class RaymarcherPanel extends JPanel {
     }
     public int randomizeAmountOfShapes() {
         Random random = new Random();
-        return random.nextInt(12) + 8;
+        return random.nextInt(12) + 9;
     }
     public int randomizeDiameter() {
         Random random = new Random();
@@ -94,47 +96,58 @@ public class RaymarcherPanel extends JPanel {
         return random.nextInt(175) + 25;
     }
 
-//Getter + setter march
-    /*Use a loop to keep track of the minimum distance between the current iteration
-point, i.e., the camera coordinates, and any object in the world. Once this goes
-below that threshold mentioned in step 11, break out, and return the list.
-ii. After one march, update the current iteration point to be the end-point of the
-march (with no alterations to the y coordinate - see step 16 for more on this!).
-*/
-    public void setMarch(){
-        int i = 0;
-        float inputX = camera.getX();
-        float inputY = camera.getY();
-
-       do {
-           if (listCollisionObjects.get(i).getX() < 0.01 || listCollisionObjects.get(i).getY() < 0.01 ){
-               break;
-           }
-           else {
-               March march1 = new March(inputX, inputY,
-                       listCollisionObjects.get(i).getX(),listCollisionObjects.get(i).getY());
-               march.add(march1);
-               if (march1.getEndingX() > this.getPreferredSize().getWidth() ||
-                       march1.getEndingY() > this.getPreferredSize().getHeight()){
-                   break;
-               }
-           }
-           inputX =  listCollisionObjects.get(i).getX();
-           i++;
-       }
-       while (i < listCollisionObjects.size());
+    //Getter + setter March
+    public void setMarch(float inputX, float inputY){
+        int j = 0;
+        float currentX = inputX;
+        while (currentX <= this.getPreferredSize().getWidth() && j < getDistancesFromCamera().size()) {
+            int i = 0;
+            do {
+                i++;
+                setDistancesFromCamera(currentX + i, inputY);
+            }
+            while (getDistancesFromCamera().get(j) <= 0.01 );
+            March march1 = new March(currentX, inputY, currentX + i, inputY);
+            march.add(march1);
+            j++;
+            System.out.println("Before X coor: " + currentX + "PerferredSize: " + this.getPreferredSize().getWidth());
+            currentX = currentX + i;
+            System.out.println("Current X coor: " + currentX + "PerferredSize: " + this.getPreferredSize().getWidth());
+        }
+        System.out.println("I've broke free!");
+        System.out.println("Size: " + getDistancesFromCamera().size());
+    }
+    public void setDistancesFromCamera(float inputX, float inputY){
+        ArrayList<Double> distancesFromCameraNew = new ArrayList<>();
+        for (int i = 0; i < getListCollisionObjects().size(); i++){
+            double distanceNew = getListCollisionObjects().get(i).computeDistance(inputX, inputY);
+            distancesFromCameraNew.add(distanceNew);
+        }
+        distancesFromCameraNew.sort(Comparator.naturalOrder());
+        distancesFromCamera = distancesFromCameraNew;
     }
 
+    public ArrayList<Double> getDistancesFromCamera() {
+        return distancesFromCamera;
+    }
 
-//Other Methods:
+    public ArrayList<March> getMarch() {
+        return march;
+    }
+
+    //Other Methods:
     public RaymarcherPanel(RaymarcherRunner raymarcherRunner) {
         this.setPreferredSize(new Dimension(raymarcherRunner.getFrame().getWidth(),
                 raymarcherRunner.getFrame().getHeight()));
         setListCollisionObjects();
-        camera = new Camera(500,320, 0);
-        setMarch();
+        camera = new Camera(1,1, 0);
         addMouseMotionListener(camera);
         addMouseListener(camera);
+        setDistancesFromCamera(camera.getX(), camera.getY());
+        setMarch(camera.getX(), camera.getY());
+        for (March m : march) {
+            addMouseMotionListener(m);
+        }
     }
     
     @Override
@@ -142,6 +155,9 @@ march (with no alterations to the y coordinate - see step 16 for more on this!).
         Graphics2D g2d = (Graphics2D) g;
         for (int i = 0; i < getListCollisionObjects().size(); i++) {
             getListCollisionObjects().get(i).drawObject(g2d);
+        }
+        for (int i = 0; i < getMarch().size(); i++) {
+            getMarch().get(i).drawObject(g2d);
         }
         camera.drawObject((Graphics2D) g);
     }

@@ -31,6 +31,10 @@ public class Camera implements Drawable, MouseMotionListener, MouseListener {
         return angle;
     }
 
+    public int getRadius() {
+        return radius;
+    }
+
     //Constructor
     public Camera(int x, int y, int angle) {
         setX(x);

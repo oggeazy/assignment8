@@ -44,4 +44,13 @@ public class RectangleObject extends CollisionObject {
         g2d.setColor(getColor());
         g2d.fillRect((int) getX() - (this.getWidth() / 2), (int) getY() - (this.getHeight() / 2), this.getWidth(), this.getHeight());
     }
+
+    @Override
+    public double computeDistance(double cameraX, double cameraY) {
+        float x2 = getX() + getWidth() / 2;
+        float y2 = getY() + getHeight() / 2;
+        float r = (float) Math.sqrt(Math.pow(getWidth() / 2, 2) + Math.pow(getHeight() / 2, 2));
+        float d = (float) (Math.sqrt(Math.pow(cameraX - x2, 2) + Math.pow(cameraY - y2, 2)) - r);
+        return d;
+    }
 }

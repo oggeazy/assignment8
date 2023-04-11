@@ -28,6 +28,8 @@ public abstract class CollisionObject implements Drawable{
 
     public abstract void paintShape(Graphics g);
 
+    public abstract double computeDistance(double cameraX, double cameraY);
+
     @Override
     public void drawObject(Graphics2D g2d) {
         paintShape(g2d);
