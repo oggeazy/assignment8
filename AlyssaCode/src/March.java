@@ -51,6 +51,7 @@ public class March implements Drawable, MouseMotionListener {
         g2d.setColor(color);
         g2d.drawOval((int) (getStartingX() - getRadius()), (int) (getStartingY() - getRadius()),
                 (int) (2*getRadius()), (int) (2*getRadius()));
+        g2d.setColor(Color.MAGENTA);
         g2d.drawLine((int) getStartingX(), (int) getStartingY(),(int) getEndingX(), (int) getEndingY());
     }
 

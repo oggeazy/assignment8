@@ -9,7 +9,6 @@ public class RaymarcherPanel extends JPanel {
     //Instance variables
     private final Camera camera;
     ArrayList<CollisionObject> listCollisionObjects = new ArrayList<>();
-    ArrayList<March> march = new ArrayList<>();
     ArrayList<Double> distancesFromCamera = new ArrayList<>();
 
     //ListCollisionObjects setter + getter
@@ -96,39 +95,45 @@ public class RaymarcherPanel extends JPanel {
         return random.nextInt(175) + 25;
     }
 
-    //Getter + setter March
-    public void setMarch(float inputX, float inputY){
-        int j = 0;
-        float currentX = inputX;
-        while (currentX <= this.getPreferredSize().getWidth()) {
-            int i = 0;
-            do {
-                i++;
-                setDistancesFromCamera(currentX + i, inputY);
-            }
-            while (getDistancesFromCamera().get(j) <= 0.01 );
-            March march1 = new March(currentX, inputY, currentX + i, inputY);
-            march.add(march1);
-            currentX = currentX + i;
-        }
+    public ArrayList<March> march(float cameraX, float cameraY) {
+        ArrayList<March> marchArray = new ArrayList<>();
+        Double closestObjectsDistanceFromCamera = getDistancesFromCamera().get(0);
+        float endingX = (float) (cameraX + closestObjectsDistanceFromCamera);
+
+        do {
+            March marchNew = new March(cameraX, cameraY, endingX, cameraY);
+            marchArray.add(marchNew);
+            cameraX = endingX;
+            setDistancesFromCamera(cameraX, cameraY);
+            closestObjectsDistanceFromCamera = getDistancesFromCamera().get(0);
+        }while (closestObjectsDistanceFromCamera > 0.01 &&
+                cameraX >= this.getPreferredSize().getWidth());
+
+
+        //track the smallest distance with closestObjectsDistanceFromCamera.
+        //make new marches by feeding it endingX until--
+        //If it goes below 0.01, then return the listOfMarch complied thus far
+
+       return marchArray;
+
     }
     public void setDistancesFromCamera(float inputX, float inputY){
         ArrayList<Double> distancesFromCameraNew = new ArrayList<>();
         for (int i = 0; i < getListCollisionObjects().size(); i++){
             double distanceNew = getListCollisionObjects().get(i).computeDistance(inputX, inputY);
             distancesFromCameraNew.add(distanceNew);
+            System.out.println("Distance "+ i+ ": "+ distanceNew);
         }
         distancesFromCameraNew.sort(Comparator.naturalOrder());
+        for (int i = 0; i < distancesFromCameraNew.size(); i++){
+            System.out.println("Distance after sort "+ i+ ": "+ distancesFromCameraNew.get(i));
+        }
         distancesFromCamera = distancesFromCameraNew;
     }
-
     public ArrayList<Double> getDistancesFromCamera() {
         return distancesFromCamera;
     }
 
-    public ArrayList<March> getMarch() {
-        return march;
-    }
 
     //Other Methods:
     public RaymarcherPanel(RaymarcherRunner raymarcherRunner) {
@@ -139,11 +144,7 @@ public class RaymarcherPanel extends JPanel {
         addMouseMotionListener(camera);
         addMouseListener(camera);
         setDistancesFromCamera(camera.getX(), camera.getY());
-        setMarch(camera.getX(), camera.getY());
-        for (March m : march) {
-            addMouseMotionListener(m);
         }
-    }
     
     @Override
     public void paintComponent(Graphics g) {
@@ -151,9 +152,10 @@ public class RaymarcherPanel extends JPanel {
         for (int i = 0; i < getListCollisionObjects().size(); i++) {
             getListCollisionObjects().get(i).drawObject(g2d);
         }
-        for (int i = 0; i < getMarch().size(); i++) {
-            getMarch().get(i).drawObject(g2d);
-        }
         camera.drawObject((Graphics2D) g);
+       for (int i = 0; i < march(camera.getX(), camera.getY()).size(); i++) {
+            march(camera.getX(), camera.getY()).get(i).drawObject(g2d);
+        }
+
     }
 }
