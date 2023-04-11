@@ -100,7 +100,7 @@ public class RaymarcherPanel extends JPanel {
     public void setMarch(float inputX, float inputY){
         int j = 0;
         float currentX = inputX;
-        while (currentX <= this.getPreferredSize().getWidth() && j < getDistancesFromCamera().size()) {
+        while (currentX <= this.getPreferredSize().getWidth()) {
             int i = 0;
             do {
                 i++;
@@ -109,13 +109,8 @@ public class RaymarcherPanel extends JPanel {
             while (getDistancesFromCamera().get(j) <= 0.01 );
             March march1 = new March(currentX, inputY, currentX + i, inputY);
             march.add(march1);
-            j++;
-            System.out.println("Before X coor: " + currentX + "PerferredSize: " + this.getPreferredSize().getWidth());
             currentX = currentX + i;
-            System.out.println("Current X coor: " + currentX + "PerferredSize: " + this.getPreferredSize().getWidth());
         }
-        System.out.println("I've broke free!");
-        System.out.println("Size: " + getDistancesFromCamera().size());
     }
     public void setDistancesFromCamera(float inputX, float inputY){
         ArrayList<Double> distancesFromCameraNew = new ArrayList<>();
@@ -140,7 +135,7 @@ public class RaymarcherPanel extends JPanel {
         this.setPreferredSize(new Dimension(raymarcherRunner.getFrame().getWidth(),
                 raymarcherRunner.getFrame().getHeight()));
         setListCollisionObjects();
-        camera = new Camera(1,1, 0);
+        camera = new Camera(1,190, 0);
         addMouseMotionListener(camera);
         addMouseListener(camera);
         setDistancesFromCamera(camera.getX(), camera.getY());
